@@ -1,0 +1,23 @@
+{
+  "name": "md-json-parser",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "lint": "standard"
+  },
+  "standard": {
+      "env": {
+          "mocha": true
+      }
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4",
+    "standard": "^12.0.1"
+  }
+}
