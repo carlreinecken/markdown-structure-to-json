@@ -1,0 +1,59 @@
+create block in currentBlock
+add contents
+if next line is header
+  if next header is bigger level
+    unshift currentBlock to blocksUnfold
+  else if next header smaller level
+    push currentBlock to content of blocksUnfold[0]
+  else if next header is same level
+    push currentBlock to content of blocksUnfold[0]
+    
+
+
+[
+  '# A',   u.0.0  u.1.0  u.1.0  u.2.0  u.1.0     u.0.1
+  'abc',
+  '## D',         u.0.0  u.0.1  u.1.1  u.0.2     u.0.1.c.2
+  'def',
+  '## D',                u.0.0  u.1.0  u.0.1     u.0.1.c.1
+  'def',
+  '### G',                      u.0.0  u.0.1.c.0 u.0.1.c.1.c.0
+  'ghi'
+  '## D',                              u.0.0     u.0.1.c.0
+  'def',
+  '# A',                                         u.0.0
+  'abc',
+]
+
+=>
+
+content: [
+  'hjahkjs',
+  {
+    title: 'A',
+    content: [
+      'abc',
+      {
+        title: 'D',
+        content: [ 'def' ]
+      }
+    ]
+  },
+  {
+    title: 'G',
+    content: [ 'ghi' ]
+  }
+]
+
+   */
+
+    /*
+      has current line an indicator of a new block?
+        and is new block a title that is on a deeper level than before?
+          than do...
+        and is new block a title that is on a higher level than before?
+          than do...
+        and is new block a title that is on the same level as before?
+          than do...
+        otherwise put current line in current block
+    */
