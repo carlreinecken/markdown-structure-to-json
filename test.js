@@ -1,4 +1,4 @@
-const parse = require('../index')
+const parse = require('./index')
 const expect = require('chai').expect
 
 describe('library', function () {
@@ -133,89 +133,124 @@ describe('library', function () {
 
     result = parse(text)
 
-    expect(result).to.eql([
-      {
-        header: 'To be honest',
-        content: [
-          'I just did not',
-          {
-            header: 'expect',
-            content: [
-              'this to',
-              {
-                header: 'work',
-                content: [
-                  'at all...'
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ])
-    expect(result[0].header).to.equal('To be honest')
-    expect(result[0].content[0]).to.equal('I just did not')
-    expect(result[0].content[1].header).to.equal('expect')
-    expect(result[0].content[1].content[0]).to.equal('this to')
-    expect(result[0].content[1].content[1].header).to.equal('work')
-    expect(result[0].content[1].content[1].content[0]).to.equal('at all...')
+    expect(result).to.eql([ { header: 'To be honest', content:
+      [ 'I just did not', { header: 'expect', content:
+        [ 'this to', { header: 'work',
+          content: [ 'at all...' ]
+        } ]
+      } ]
+    } ])
   })
-  it('should parse three deep nested block', function () {
-    const text = [
-      '# To be honest',
-      'I just did not',
-      '## expect',
-      'this to',
-      '### work',
-      'at all...'
-    ].join('\n\n')
+})
 
-    result = parse(text)
-
-    expect(result).to.eql([
-      {
-        header: 'To be honest',
-        content: [
-          'I just did not',
-          {
-            header: 'expect',
-            content: [
-              'this to',
-              {
-                header: 'work',
-                content: [
-                  'at all...'
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ])
-    expect(result[0].header).to.equal('To be honest')
-    expect(result[0].content[0]).to.equal('I just did not')
-    expect(result[0].content[1].header).to.equal('expect')
-    expect(result[0].content[1].content[0]).to.equal('this to')
-    expect(result[0].content[1].content[1].header).to.equal('work')
-    expect(result[0].content[1].content[1].content[0]).to.equal('at all...')
+describe('a markdown list', function () {
+  it('can be the only thing and in the first line', function () {
+    const result = parse('- A bulletin thing\n- Hi there')
+    expect(result).to.eql([{
+      type: 'list',
+      content: [ 'A bulletin thing', 'Hi there' ]
+    }])
   })
 
-  it('should parse a list block on the first level', function () {
-    const text = [
-      '- A bulletin thing',
-      '- Hi there'
-    ].join('\n\n')
+  it('can be defined with plus signs', function () {
+    const result = parse('+ First item\n+ Second item and plus')
+    expect(result).to.eql([{
+      type: 'list',
+      content: [ 'First item', 'Second item and plus' ]
+    }])
+  })
 
-    result = parse(text)
+  it('can be defined with dashes', function () {
+    const result = parse('- First item\n- Second item flash')
+    expect(result).to.eql([{
+      type: 'list',
+      content: [ 'First item', 'Second item flash' ]
+    }])
+  })
 
+  it('can be defined with asterisks', function () {
+    const result = parse('* First item\n* Second item')
+    expect(result).to.eql([{
+      type: 'list',
+      content: [ 'First item', 'Second item' ]
+    }])
+  })
+
+  it('can be defined with numbers', function () {
+    const result = parse('1. First item\n2. Second item and so forth...')
+    expect(result).to.eql([{
+      type: 'list',
+      content: [ 'First item', 'Second item and so forth...' ]
+    }])
+  })
+
+  it('can be nested', function () {
+    const result = parse('- A bulletin thing\n- Hi there\n  - Omg!')
+    expect(result).to.eql([{
+      type: 'list',
+      content: [
+        'A bulletin thing',
+        'Hi there',
+        {
+          type: 'list',
+          content: ['Omg!']
+        }
+      ]
+    }])
+  })
+
+  it('can be nested an go back to the root level after', function () {
+    const result = parse('- Apple\n  - Green\n  - Red\n- Banana')
+    expect(result).to.eql([{
+      type: 'list',
+      content: [
+        'Apple',
+        {
+          type: 'list',
+          content: ['Green', 'Red']
+        },
+        'Banana'
+      ]
+    }])
+  })
+
+  it('can be before and after some paragraphs', function () {
+    const result = parse('I would like to list some things.\n\n- Microphone\n- Water Bottle\n\nBye.\n\nThat was fun.')
     expect(result).to.eql([
-      {
-        type: 'list',
-        content: [
-          'A bulletin thing',
-          'Hi there'
-        ]
-      }
+      'I would like to list some things.',
+      { type: 'list',
+        content: ['Microphone', 'Water Bottle']
+      },
+      'Bye.',
+      'That was fun.'
     ])
+  })
+
+  it('can be in the middle of some markdown', function () {
+    const result = parse([
+      '# The Alphabet\n',
+      'It consists of vocals and consonants\n',
+      '## Vocal Examples\n',
+      '* a', '* e', '* i',
+      '## Consonants Examples\n',
+      'There are more consonants\n',
+      '- k', '- z', '- m\n',
+      'The alphabet is great.'
+    ].join('\n'))
+    expect(result).to.eql([{
+      header: 'The Alphabet',
+      content: ['It consists of vocals and consonants',
+        { header: 'Vocal Examples',
+          content: [{ type: 'list', content: ['a', 'e', 'i']}]
+        },
+        { header: 'Consonants Examples',
+          content: [
+            'There are more consonants',
+            { type: 'list', content: ['k', 'z', 'm']},
+            'The alphabet is great.'
+          ]
+        }
+      ]
+    }])
   })
 })

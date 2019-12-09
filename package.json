@@ -1,7 +1,7 @@
 {
   "name": "md2json",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,7 @@
           "mocha": true
       }
   },
+  "bin": "./bin.js",
   "author": "",
   "license": "MIT",
   "devDependencies": {
