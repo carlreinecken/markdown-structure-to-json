@@ -4,9 +4,9 @@ const readline = require('readline')
 const parse = require('../src/parser')
 
 const readlineInterface = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    terminal: false
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
 })
 
 const lines = []

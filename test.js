@@ -1,6 +1,8 @@
 const parse = require('./index')
 const expect = require('chai').expect
 
+/* eslint-disable no-unused-expressions */
+
 describe('library', function () {
   it('should get an empty array with no content', function () {
     const text = ''
@@ -66,7 +68,7 @@ describe('library', function () {
 
   it('should parse a header with two paragraphs', function () {
     const text = `## The story is as follows:\n\nOne paragraph meets another paragraph.\n\nBut the second paragraph does not see the first paragraph...`
-    result = parse(text)
+    const result = parse(text)
     expect(result[0].header).to.equal('The story is as follows:')
     expect(result[0].content[0]).to.equal('One paragraph meets another paragraph.')
     expect(result[0].content[1]).to.equal('But the second paragraph does not see the first paragraph...')
@@ -75,7 +77,7 @@ describe('library', function () {
   it('should parse header with content and another header on the same level', function () {
     const text = '# Header 1\n\nHello parser!\n\n# Header the second\n\nBye parsed one!'
 
-    result = parse(text)
+    const result = parse(text)
 
     expect(result[0].header).to.equal('Header 1')
     expect(result[0].content[0]).to.equal('Hello parser!')
@@ -91,7 +93,7 @@ describe('library', function () {
       'the nested block!'
     ].join('\n\n')
 
-    result = parse(text)
+    const result = parse(text)
 
     expect(result[0].header).to.equal('Hello dear')
     expect(result[0].content[0]).to.equal('I have something to show to you...')
@@ -110,7 +112,7 @@ describe('library', function () {
       'at all...'
     ].join('\n\n')
 
-    result = parse(text)
+    const result = parse(text)
 
     expect(result[0].header).to.equal('To be honest')
     expect(result[0].content[0]).to.equal('I just did not')
@@ -131,10 +133,12 @@ describe('library', function () {
       'at all...'
     ].join('\n\n')
 
-    result = parse(text)
+    const result = parse(text)
 
-    expect(result).to.eql([ { header: 'To be honest', content:
-      [ 'I just did not', { header: 'expect', content:
+    expect(result).to.eql([ { header: 'To be honest',
+      content:
+      [ 'I just did not', { header: 'expect',
+        content:
         [ 'this to', { header: 'work',
           content: [ 'at all...' ]
         } ]
@@ -241,12 +245,12 @@ describe('a markdown list', function () {
       header: 'The Alphabet',
       content: ['It consists of vocals and consonants',
         { header: 'Vocal Examples',
-          content: [{ type: 'list', content: ['a', 'e', 'i']}]
+          content: [{ type: 'list', content: ['a', 'e', 'i'] }]
         },
         { header: 'Consonants Examples',
           content: [
             'There are more consonants',
-            { type: 'list', content: ['k', 'z', 'm']},
+            { type: 'list', content: ['k', 'z', 'm'] },
             'The alphabet is great.'
           ]
         }
