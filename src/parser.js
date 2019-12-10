@@ -1,4 +1,4 @@
-const parser = (text) => {
+module.exports = (text) => {
   const HEADER_REGEX = /^#{1,6} /
   const LIST_REGEX = /^( *)(\d\.|\+|-|\*) /
 
@@ -99,5 +99,3 @@ const parser = (text) => {
   text = text.filter(line => line !== '')
   return makeContentList(text)
 }
-
-module.exports = parser
