@@ -1,4 +1,4 @@
-module.exports = (text) => {
+export default (text) => {
   const HEADER_REGEX = /^#{1,6} /
   const LIST_REGEX = /^( *)(\d\.|\+|-|\*) /
 

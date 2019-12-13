@@ -3,13 +3,15 @@
   "private": true,
   "version": "0.1.0",
   "description": "Convert markdown to json, which keeps the structered elements and nesting.",
-  "main": "index.js",
+  "main": "dist/md2json.js",
+  "module": "src/parser.js",
   "scripts": {
+    "pretest": "npm run build",
     "test": "mocha",
     "lint": "standard",
     "clean": "rm -r dist && mkdir dist",
     "prebuild": "npm run lint && npm run clean",
-    "build": "browserify index.js --s md2json > dist/md2json.js",
+    "build": "rollup src/parser.js --file dist/md2json.js --format umd --name md2json",
     "postbuild": "terser dist/md2json.js > dist/md2json.min.js"
   },
   "standard": {
@@ -24,9 +26,9 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "browserify": "^16.5.0",
     "chai": "^4.2.0",
     "mocha": "^6.1.4",
+    "rollup": "^1.27.12",
     "standard": "^12.0.1",
     "terser": "^4.4.2"
   }

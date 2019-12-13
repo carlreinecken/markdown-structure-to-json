@@ -1,4 +1,4 @@
-const parse = require('./index')
+const parse = require('./dist/md2json.js')
 const expect = require('chai').expect
 
 /* eslint-disable no-unused-expressions */

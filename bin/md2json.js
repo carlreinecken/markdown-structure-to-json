@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const readline = require('readline')
-const parse = require('../src/parser')
+const parse = require('../dist/md2json.js')
 
 const readlineInterface = readline.createInterface({
   input: process.stdin,
