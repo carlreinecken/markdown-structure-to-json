@@ -1,6 +1,6 @@
 # markdown-structure-to-json
 
-Convert a markdown file or string to json, which keeps the structered elements and nesting. So far only headers (atx) and lists (\*, +, -, 1.) are recognized as structural elements. Anything else will be ignored and just passed through as content.
+Convert a markdown file or string to json, which keeps the structered elements and nesting. So far only headers (atx) and lists (\*, +, -, 1.) are recognized as structural elements. Anything else will be ignored and just passed through as paragraph.
 
 ## Example
 
@@ -25,7 +25,7 @@ A short but fine text.
 Ah forget it.
 ```
 
-parses to:
+This markdown is parsed to this JSON:
 
 ```json
 [
@@ -102,6 +102,35 @@ The script reads from `stdin` and outputs to `stdout`.
 ```shell
 md2json < my-markdown-file.md > my-output-file.json
 ```
+
+## Options
+
+```javascript
+md2json(text [, options])
+```
+
+### maxHeaderLevel
+
+Set the maximal header level that should be parsed as header block. E.g. `{ maxHeaderLevel: 2 }` will only parse headers with one or two `#` and pass the other ones just through.
+
+Accepts numbers from `1` to `6`. Defaults to `6`.
+
+### parseLists
+
+Specifically include/exclude one of the list types. E.g. `{ parseLists: '+-' }` parses all lists with a plus sign and a dash, but passes through numbered lists or those with dashes.
+
+Include lists with...
+
+* asterisks `*`
+* plus signs `+`
+* dashes `-`
+* numbers `.`
+
+Accepts `true` or `false` or a string of one or more of the list characters (see above). Defaults to `true`.
+
+### keepBlankLines
+
+Accepts `true` or `false`. Defaults to `false`.
 
 ## Development
 

@@ -10,12 +10,6 @@ describe('library', function () {
     expect(result).to.be.empty
   })
 
-  xit('should pass all blank lines through', function () {
-    const text = 'I do not\n\nwant to loose you!'
-    const result = parse(text)
-    expect(result).to.eql(['I do not', '', 'want to loose you!'])
-  })
-
   it('should parse a text without a header', function () {
     const text = 'I am\n\nanother paragraph and no header!'
     const result = parse(text)
@@ -256,5 +250,80 @@ describe('a markdown list', function () {
         }
       ]
     }])
+  })
+})
+
+describe('the option "keepBlankLines":', function () {
+  it('should pass all blank lines through', function () {
+    const text = 'I do not\n\nwant to loose you!'
+    const result = parse(text, { keepBlankLines: true })
+    expect(result).to.eql(['I do not', '', 'want to loose you!'])
+  })
+})
+
+describe('the option "maxHeaderLevel 2":', function () {
+  it('should pass through all headers bigger than the given number', function () {
+    const text = '# Hello World\n\n## Here we go again\n\n### Yes!'
+    const result = parse(text, { maxHeaderLevel: 2 })
+    expect(result).to.eql([{
+      header: 'Hello World',
+      content: [{
+        header: 'Here we go again',
+        content: [
+          '### Yes!'
+        ]
+      }]
+    }])
+  })
+
+  it('should abort and output error if invalid value given', function () {
+    const text = '# Header'
+    const fn = () => parse(text, { maxHeaderLevel: 10 })
+    expect(fn).to.throw(TypeError)
+  })
+})
+
+describe('the option "parseLists":', function () {
+  it('should pass through all lists with the option set false', function () {
+    const text = '* Tomato\n- Cucumber\n+ Paprika\n4. Salad'
+    const result = parse(text, { parseLists: false })
+    expect(result).to.eql([ '* Tomato', '- Cucumber', '+ Paprika', '4. Salad' ])
+  })
+
+  it('should parse all lists with the option set to true', function () {
+    const text = '* Tomato\n- Cucumber\n+ Paprika\n4. Salad'
+    const result = parse(text, { parseLists: true })
+    expect(result).to.eql([
+      { type: 'list', content: [ 'Tomato', 'Cucumber', 'Paprika', 'Salad' ] }
+    ])
+  })
+
+  it('should abort and output error if invalid string given', function () {
+    const text = '* Tomato\n- Cucumber\n+ Paprika\n4. Salad'
+    const fn = () => parse(text, { parseLists: 'abc' })
+    expect(fn).to.throw(TypeError)
+  })
+
+  it('should parse all lists with set key characters', function () {
+    const text = '* Tomato\n- Cucumber\n+ Paprika\n4. Salad'
+    const result = parse(text, { parseLists: '*+.-' })
+    expect(result).to.eql([
+      { type: 'list', content: [ 'Tomato', 'Cucumber', 'Paprika', 'Salad' ] }
+    ])
+  })
+
+  it('should parse all lists with the choosen key characters', function () {
+    const text = '* Tomato\n- Cucumber\n+ Paprika\n4. Salad'
+    const result = parse(text, { parseLists: '*+' })
+    expect(result).to.eql([
+      { type: 'list',
+        content: ['Tomato']
+      },
+      '- Cucumber',
+      { type: 'list',
+        content: ['Paprika']
+      },
+      '4. Salad'
+    ])
   })
 })

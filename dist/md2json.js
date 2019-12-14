@@ -4,17 +4,72 @@
   (global = global || self, global.md2json = factory());
 }(this, (function () { 'use strict';
 
-  var parser = (text) => {
-    const HEADER_REGEX = /^#{1,6} /;
-    const LIST_REGEX = /^( *)(\d\.|\+|-|\*) /;
+  var parser = (text, options) => {
+    let HEADER_REGEX = null;
+    let LIST_REGEX = null;
+
+    const OPTION_DEFAULTS = {
+      keepBlankLines: false,
+      maxHeaderLevel: 6,
+      parseLists: true
+    };
+
+    const BLOCK_TYPE = {
+      PARAGRAPH: 'paragraph',
+      HEADER: 'header',
+      LIST: 'list',
+      CODE: 'code'
+    };
+
+    function buildHeaderRegex (options) {
+      if (!/^[1-6]{1}$/.test(options.maxHeaderLevel)) {
+        throw new TypeError('Invalid option maxHeaderLevel: ' + options.maxHeaderLevel)
+      }
+
+      let result = '^#{1,';
+      result += options.maxHeaderLevel;
+      result += '} ';
+      return new RegExp(result)
+    }
+
+    function buildListRegex (options) {
+      if (options.parseLists === false) {
+        return new RegExp('(?!)')
+      }
+
+      let charRegex = null;
+      if (options.parseLists === true) {
+        charRegex = ['\\d\\.', '\\+', '-', '\\*'];
+      } else {
+        const chars = options.parseLists.split('').filter(char => /\*|\+|-|\./.test(char));
+
+        if (chars.length < 1 || chars.length > 4) {
+          throw new TypeError('Invalid option parseLists: ' + options.parseLists)
+        }
+
+        const charKeyMap = {
+          '.': '\\d\\.',
+          '*': '\\*',
+          '+': '\\+',
+          '-': '-'
+        };
+
+        charRegex = chars.map(char => charKeyMap[char]);
+      }
+
+      let result = '^( *)(';
+      result += charRegex.join('|');
+      result += ') ';
+      return new RegExp(result)
+    }
 
     function getTypeOf (line) {
       if (HEADER_REGEX.test(line)) {
-        return 'header'
+        return BLOCK_TYPE.HEADER
       } else if (LIST_REGEX.test(line)) {
-        return 'list'
+        return BLOCK_TYPE.LIST
       }
-      return 'paragraph'
+      return BLOCK_TYPE.PARAGRAPH
     }
 
     function getHeaderLevel (line) {
@@ -55,9 +110,9 @@
       const block = { content: [] };
       const level = getListLevel(lines[0]);
 
-      block.type = 'list';
+      block.type = BLOCK_TYPE.LIST;
 
-      while (lines[0] != null && getTypeOf(lines[0]) === 'list') {
+      while (lines[0] != null && getTypeOf(lines[0]) === BLOCK_TYPE.LIST) {
         let newLine = lines.shift();
         if (getListLevel(newLine) === level) {
           newLine = newLine.replace(LIST_REGEX, '');
@@ -76,7 +131,7 @@
       const result = [];
 
       // add all paragraphs before the next block
-      while (lines[0] != null && getTypeOf(lines[0]) === 'paragraph') {
+      while (lines[0] != null && getTypeOf(lines[0]) === BLOCK_TYPE.PARAGRAPH) {
         let newLine = lines.shift();
         result.push(newLine);
       }
@@ -89,9 +144,9 @@
       // the next line starts a block
       const lineType = getTypeOf(lines[0]);
       let block;
-      if (lineType === 'header') {
+      if (lineType === BLOCK_TYPE.HEADER) {
         ({ block, lines } = makeHeaderBlock(lines));
-      } else if (lineType === 'list') {
+      } else if (lineType === BLOCK_TYPE.LIST) {
         ({ block, lines } = makeListBlock(lines));
       }
 
@@ -106,10 +161,25 @@
       return result
     }
 
+    // -------- MAIN --------
+
     if (!Array.isArray(text)) {
       text = text.split('\n');
     }
-    text = text.filter(line => line !== '');
+
+    options = { ...OPTION_DEFAULTS, ...(options || {}) };
+
+    HEADER_REGEX = buildHeaderRegex(options);
+    LIST_REGEX = buildListRegex(options);
+
+    if (HEADER_REGEX == null || LIST_REGEX == null) {
+      return null
+    }
+
+    if (!options.keepBlankLines) {
+      text = text.filter(line => line !== '');
+    }
+
     return makeContent(text)
   };
 
