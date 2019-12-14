@@ -8,11 +8,16 @@
     const HEADER_REGEX = /^#{1,6} /;
     const LIST_REGEX = /^( *)(\d\.|\+|-|\*) /;
 
-    function getHeaderLevel (line) {
-      if (line == null) {
-        return null
+    function getTypeOf (line) {
+      if (HEADER_REGEX.test(line)) {
+        return 'header'
+      } else if (LIST_REGEX.test(line)) {
+        return 'list'
       }
+      return 'paragraph'
+    }
 
+    function getHeaderLevel (line) {
       const match = line.match(HEADER_REGEX);
 
       if (match == null) {
@@ -20,18 +25,6 @@
       }
 
       return match[0].trim().length
-    }
-
-    function getTypeOf (line) {
-      if (HEADER_REGEX.test(line)) {
-        return 'header'
-      }
-
-      if (LIST_REGEX.test(line)) {
-        return 'list'
-      }
-
-      return 'paragraph'
     }
 
     function getListLevel (line) {
@@ -44,57 +37,71 @@
       return match[1].length
     }
 
-    function makeContentList (lines) {
+    function makeHeaderBlock (lines) {
+      const block = { content: [] };
+      const level = getHeaderLevel(lines[0]);
+
+      block.header = lines.shift().replace(HEADER_REGEX, '');
+
+      while (lines[0] != null && getHeaderLevel(lines[0]) !== level) {
+        let newLine = lines.shift();
+        block.content.push(newLine);
+      }
+
+      return { lines, block }
+    }
+
+    function makeListBlock (lines) {
+      const block = { content: [] };
+      const level = getListLevel(lines[0]);
+
+      block.type = 'list';
+
+      while (lines[0] != null && getTypeOf(lines[0]) === 'list') {
+        let newLine = lines.shift();
+        if (getListLevel(newLine) === level) {
+          newLine = newLine.replace(LIST_REGEX, '');
+        }
+        block.content.push(newLine);
+      }
+
+      return { lines, block }
+    }
+
+    function makeContent (lines) {
       if (!lines || lines.length < 1) {
         return lines
       }
 
       const result = [];
 
-      // if the first lines are not headers add them to the result
+      // add all paragraphs before the next block
       while (lines[0] != null && getTypeOf(lines[0]) === 'paragraph') {
         let newLine = lines.shift();
         result.push(newLine);
       }
 
-      // it may happen that in these lines there were just paragraphs nothing more
       if (lines.length < 1) {
+        // no blocks, only paragraphs
         return result
       }
 
-      // the next line can only be NOT a paragraph
+      // the next line starts a block
       const lineType = getTypeOf(lines[0]);
-      const block = { content: [] };
-      let level = null;
-
+      let block;
       if (lineType === 'header') {
-        level = getHeaderLevel(lines[0]);
-        block.header = lines.shift().replace(HEADER_REGEX, '');
-
-        while (lines[0] != null && getHeaderLevel(lines[0]) !== level) {
-          let newLine = lines.shift();
-          block.content.push(newLine);
-        }
+        ({ block, lines } = makeHeaderBlock(lines));
       } else if (lineType === 'list') {
-        level = getListLevel(lines[0]);
-        block.type = 'list';
-
-        while (lines[0] != null && getTypeOf(lines[0]) === 'list') {
-          let newLine = lines.shift();
-          if (getListLevel(newLine) === level) {
-            newLine = newLine.replace(LIST_REGEX, '');
-          }
-          block.content.push(newLine);
-        }
+        ({ block, lines } = makeListBlock(lines));
       }
 
-      // if in the content are not just paragraphs, this should turn them to a block
-      block.content = makeContentList(block.content);
+      // parse block.content to blocks or leave them as paragraphs
+      block.content = makeContent(block.content);
 
       result.push(block);
 
-      // all the lines after the block have to be parsed as well
-      makeContentList(lines).map(blck => result.push(blck));
+      // add all paragraphs and blocks after the the last block
+      makeContent(lines).map(blck => result.push(blck));
 
       return result
     }
@@ -103,7 +110,7 @@
       text = text.split('\n');
     }
     text = text.filter(line => line !== '');
-    return makeContentList(text)
+    return makeContent(text)
   };
 
   return parser;

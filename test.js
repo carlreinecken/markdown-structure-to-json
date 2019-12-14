@@ -10,10 +10,10 @@ describe('library', function () {
     expect(result).to.be.empty
   })
 
-  xit('should parse two lines separated by one new line as one paragraph', function () {
-    const text = 'I do not\nwant to loose you!'
+  xit('should pass all blank lines through', function () {
+    const text = 'I do not\n\nwant to loose you!'
     const result = parse(text)
-    expect(result).to.eql(['I do not want to loose you!'])
+    expect(result).to.eql(['I do not', '', 'want to loose you!'])
   })
 
   it('should parse a text without a header', function () {
