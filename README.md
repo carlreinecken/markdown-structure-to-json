@@ -94,7 +94,7 @@ const result = md2json('# Hi\n\nI am a markdown document.')
 ### CLI
 
 ```shell
-npm install -g X
+npm install -g carlreinecken/md2json
 ```
 
 The script reads from `stdin` and outputs to `stdout`.
