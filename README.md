@@ -1,6 +1,8 @@
 # markdown-structure-to-json
 
-Convert a markdown file or string to json, which keeps the structered elements and nesting. So far only headers (atx) and lists (\*, +, -, 1.) are recognized as structural elements. Anything else will be ignored and just passed through as paragraph.
+Convert a markdown file or string to json, which keeps the structered elements and nesting. So far only headers (atx) and lists (\*, +, -, 1.) are recognized as structural elements. Anything else will be ignored and just passed through.
+
+Has no dependencies.
 
 ## Example
 
@@ -74,19 +76,19 @@ This markdown is parsed to this JSON:
 Load the javascript into your HTML file:
 
 ```html
-<script type="text/javascript" src="md2json.min.js"></script>
+<script type="text/javascript" src="markdown-structure-to-json.min.js"></script>
 ```
 
 Pass the markdown string:
 
 ```javascript
-const result = md2json('# Hi\n\nI am a markdown document.')
+const result = markdownStructureToJson('# Hi\n\nI am a markdown document.')
 ```
 
 ### Node.js
 
 ```javascript
-const md2json = require('md2json')
+const md2json = require('markdown-structure-to-json')
 
 const result = md2json('# Hi\n\nI am a markdown document.')
 ```
@@ -94,13 +96,13 @@ const result = md2json('# Hi\n\nI am a markdown document.')
 ### CLI
 
 ```shell
-npm install -g carlreinecken/md2json
+npm install -g carlreinecken/markdown-structure-to-json
 ```
 
 The script reads from `stdin` and outputs to `stdout`.
 
 ```shell
-md2json < my-markdown-file.md > my-output-file.json
+markdown-structure-to-json < my-markdown-file.md > my-output-file.json
 ```
 
 ## Options

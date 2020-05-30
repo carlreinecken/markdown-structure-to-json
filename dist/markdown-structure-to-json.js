@@ -1,7 +1,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.md2json = factory());
+  (global = global || self, global['markdown-structure-to-json'] = factory());
 }(this, (function () { 'use strict';
 
   var parser = (text, options) => {
@@ -17,8 +17,7 @@
     const BLOCK_TYPE = {
       PARAGRAPH: 'paragraph',
       HEADER: 'header',
-      LIST: 'list',
-      CODE: 'code'
+      LIST: 'list'
     };
 
     function buildHeaderRegex (options) {

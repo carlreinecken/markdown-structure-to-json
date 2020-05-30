@@ -1,9 +1,9 @@
 {
-  "name": "md2json",
+  "name": "markdown-structure-to-json",
   "private": true,
   "version": "0.1.0",
   "description": "Convert markdown to json, which keeps the structered elements and nesting.",
-  "main": "dist/md2json.js",
+  "main": "dist/markdown-structure-to-json.js",
   "module": "src/parser.js",
   "scripts": {
     "pretest": "npm run build",
@@ -11,8 +11,8 @@
     "lint": "standard",
     "clean": "rm -r dist && mkdir dist",
     "prebuild": "npm run lint && npm run clean",
-    "build": "rollup src/parser.js --file dist/md2json.js --format umd --name md2json",
-    "postbuild": "terser dist/md2json.js > dist/md2json.min.js"
+    "build": "rollup src/parser.js --file dist/markdown-structure-to-json.js --format umd --name markdown-structure-to-json",
+    "postbuild": "terser dist/markdown-structure-to-json.js > dist/markdown-structure-to-json.min.js"
   },
   "standard": {
     "ignore": [
@@ -22,7 +22,7 @@
       "mocha": true
     }
   },
-  "bin": "./bin/md2json.js",
+  "bin": "./bin/markdown-structure-to-json.js",
   "author": "",
   "license": "MIT",
   "devDependencies": {

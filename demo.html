@@ -45,13 +45,13 @@
         <textarea id="input"></textarea>
         <div id="output"><div>
 
-        <script src="dist/md2json.js"></script>
+        <script src="dist/markdown-structure-to-json.js"></script>
         <script>
-            /* global md2json */
+            /* global markdownStructureToJson */
 
-            console.log('You are trying out the demo of md2json!')
+            console.log('You are trying out the demo of markdownStructureToJson!')
             console.log('For this demo you can overwrite the global `parseOptions` object to set your own options. See the README for all available options.')
-            console.log('Call the method `parseMarkdownToJson` to use the new options or change something in the textarea. You can also call `md2json()` directly.')
+            console.log('Call the method `parseMarkdownToJson` to use the new options or change something in the textarea. You can also call `markdownStructureToJson()` directly.')
 
             let parseOptions = {}
 
@@ -63,7 +63,7 @@
             parseMarkdownToJson()
 
             function parseMarkdownToJson () {
-              const result = JSON.stringify(md2json(inputEl.value, parseOptions), null, 2)
+              const result = JSON.stringify(markdownStructureToJson(inputEl.value, parseOptions), null, 2)
               outputEl.innerHTML = result
             }
         </script>
