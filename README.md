@@ -73,7 +73,7 @@ This markdown is parsed to this JSON:
 
 ## Usage
 
-Load the javascript into your HTML file:
+Load the javascript of the /dist directory into your HTML file:
 
 ```html
 <script type="text/javascript" src="markdown-structure-to-json.min.js"></script>
@@ -85,24 +85,26 @@ Pass the markdown string:
 const result = markdownStructureToJson('# Hi\n\nI am a markdown document.')
 ```
 
-### Node.js
+### NPM
+
+```shell
+$ npm install carlreinecken/markdown-structure-to-json
+```
 
 ```javascript
-const md2json = require('markdown-structure-to-json')
-
-const result = md2json('# Hi\n\nI am a markdown document.')
+import md2json from 'markdown-structure-to-json'
 ```
 
 ### CLI
 
 ```shell
-npm install -g carlreinecken/markdown-structure-to-json
+$ npm install -g carlreinecken/markdown-structure-to-json
 ```
 
 The script reads from `stdin` and outputs to `stdout`.
 
 ```shell
-markdown-structure-to-json < my-markdown-file.md > my-output-file.json
+$ markdown-structure-to-json < my-markdown-file.md > my-output-file.json
 ```
 
 ## Options
