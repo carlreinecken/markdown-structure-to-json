@@ -2,7 +2,9 @@
   "name": "markdown-structure-to-json",
   "private": true,
   "version": "0.1.0",
+  "license": "ISC",
   "description": "Convert markdown to json, which keeps the structered elements and nesting.",
+  "author": "Carl Reinecken",
   "main": "dist/markdown-structure-to-json.js",
   "module": "src/parser.js",
   "scripts": {
@@ -23,8 +25,6 @@
     }
   },
   "bin": "./bin/markdown-structure-to-json.js",
-  "author": "",
-  "license": "MIT",
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^6.1.4",
