@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="robots" content="noindex, nofollow">
+        <link rel="stylesheet" href="main.css">
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            html, body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                overflow: hidden;
+            }
+
+            #input, #output {
+                display: inline-block;
+                width: 49%;
+                height: 100%;
+                vertical-align: top;
+                padding: 20px;
+                font-size: 14px;
+                font-family: monospace;
+            }
+
+            #output {
+                white-space: pre;
+                overflow-y: scroll;
+            }
+
+            #input {
+                border: none;
+                border-right: 1px solid #ccc;
+                resize: none;
+                outline: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <textarea id="input"></textarea>
+        <div id="output"><div>
+
+        <script src="dist/md2json.js"></script>
+        <script>
+            /* global md2json */
+
+            console.log('You are trying out the demo of md2json!')
+            console.log('For this demo you can overwrite the global `parseOptions` object to set your own options. See the README for all available options.')
+            console.log('Call the method `parseMarkdownToJson` to use the new options or change something in the textarea. You can also call `md2json()` directly.')
+
+            let parseOptions = {}
+
+            const inputEl = document.getElementById('input')
+            const outputEl = document.getElementById('output')
+            inputEl.addEventListener('input', parseMarkdownToJson)
+
+            inputEl.value = '# Hello!\n\nType some markdown:'
+            parseMarkdownToJson()
+
+            function parseMarkdownToJson () {
+              const result = JSON.stringify(md2json(inputEl.value, parseOptions), null, 2)
+              outputEl.innerHTML = result
+            }
+        </script>
+    </body>
+</html>
