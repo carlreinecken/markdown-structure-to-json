@@ -109,6 +109,16 @@ md2json < my-markdown-file.md > my-output-file.json
 md2json(text [, options])
 ```
 
+For example:
+
+```javascript
+md2json(text {
+  maxHeaderLevel: 2,
+  parseLists: '.*',
+  keepBlankLines: true
+})
+```
+
 ### maxHeaderLevel
 
 Set the maximal header level that should be parsed as header block. E.g. `{ maxHeaderLevel: 2 }` will only parse headers with one or two `#` and pass the other ones just through.
@@ -126,7 +136,7 @@ Include lists with...
 * dashes `-`
 * numbers `.`
 
-Accepts `true` or `false` or a string of one or more of the list characters (see above). Defaults to `true`.
+Also accepts `true` or `false` which will either parse all lists or no lists respectively. Defaults to `true`.
 
 ### keepBlankLines
 
