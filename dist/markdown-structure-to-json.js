@@ -1,8 +1,8 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global['markdown-structure-to-json'] = factory());
-}(this, (function () { 'use strict';
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global["markdown-structure-to-json"] = factory());
+})(this, (function () { 'use strict';
 
   var parser = (text, options) => {
     let HEADER_REGEX = null;
@@ -184,4 +184,4 @@
 
   return parser;
 
-})));
+}));

@@ -27,8 +27,8 @@
   "bin": "./bin/markdown-structure-to-json.js",
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.1.4",
-    "rollup": "^1.27.12",
+    "mocha": "^11.0.1",
+    "rollup": "^4.28.1",
     "standard": "^12.0.1",
     "terser": "^4.4.2"
   }
